@@ -1,12 +1,12 @@
 using System.Data;
 using System.Linq.Expressions;
+using System.Runtime.Serialization;
 
 namespace Calculator
 {
     public partial class Form1 : Form
     {
         private string expression;
-
         public Form1()
         {
             expression = "0";
@@ -65,9 +65,16 @@ namespace Calculator
                 && textbox.Text.ToString().Last() != '.')
             {
                 DataTable dt = new DataTable();
-                var result = dt.Compute(expression, "");
-                textbox.Text = Convert.ToString(result);
-                expression = textbox.Text;
+                try
+                {
+                    var result = dt.Compute(expression, "");
+                    textbox.Text = Convert.ToString(result);
+                    expression = textbox.Text;
+                }
+                catch (SyntaxErrorException)
+                {
+                    expression = textbox.Text;
+                }
             }
         }
     }
